@@ -7,12 +7,12 @@ final class DoubleField extends Field
     private ?float $min;
     private ?float $max;
 
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null, $default=null)
     {
         if (is_numeric($min) && is_numeric($max) && $min > $max)
             throw new \InvalidArgumentException('min greater than max');
 
-        parent::__construct($name, FieldType::DOUBLE, $required, $nullable);
+        parent::__construct($name, FieldType::DOUBLE, $required, $nullable, $default);
 
         $this->min = $min;
         $this->max = $max;
@@ -49,5 +49,21 @@ final class DoubleField extends Field
             return $val <= $this->max;
         else
             return true;
+    }
+
+    public function cast($value): float
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if (is_numeric($value))
+            return (float)$value;
+        else if (is_string($value)) {
+            $value = trim($value);
+            if (is_numeric($value))
+                return (float)$value;
+        }
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }

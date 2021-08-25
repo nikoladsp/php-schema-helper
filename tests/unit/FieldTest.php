@@ -57,7 +57,7 @@ class FieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_double()
     {
-        $field = $this->create_field_instance('amount', 3, false, false);
+        $field = $this->create_field_instance('amount', 10, false, false);
         $this->assertEquals('amount', $field->name());
         $this->assertEquals(new FieldType(FieldType::DOUBLE), $field->type());
         $this->assertEquals(false, $field->required());

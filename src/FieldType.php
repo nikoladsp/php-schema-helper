@@ -9,12 +9,12 @@ final class FieldType
     private static array $valueMap;
 
     const INTEGER = 1;
-    const STRING = 2;
-    const DOUBLE = 3;
-    const REGEX = 4;
-    const EMAIL = 5;
-    const BOOL = 6;
-    const DATETIME = 7;
+    const STRING = 5;
+    const DOUBLE = 10;
+    const REGEX = 15;
+    const EMAIL = 20;
+    const BOOL = 25;
+    const DATETIME = 30;
 
     public function __construct($value)
     {

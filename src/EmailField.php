@@ -4,9 +4,9 @@ namespace SchemaHelper;
 
 class EmailField extends Field
 {
-    public function __construct(string $name, bool $required = false, bool $nullable = true)
+    public function __construct(string $name, bool $required = false, bool $nullable = true, $default=null)
     {
-        parent::__construct($name, FieldType::EMAIL, $required, $nullable);
+        parent::__construct($name, FieldType::EMAIL, $required, $nullable, $default);
     }
 
     private function email_strip_comments($comment, $email, $replace=''){
@@ -28,5 +28,16 @@ class EmailField extends Field
             return false;
 
         return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
+
+    public function cast($value): string
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if (is_string($value))
+            return trim($value);
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }

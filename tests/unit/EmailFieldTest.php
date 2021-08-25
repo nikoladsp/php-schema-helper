@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require_once (__DIR__ . '/../../vendor/autoload.php');
+require_once(dirname(__DIR__, 2) . '/vendor/autoload.php');
 
 use \SchemaHelper\FieldType;
 use \SchemaHelper\EmailField;
@@ -61,5 +61,69 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate('.mysite@mysite.org'));
         $this->assertFalse($field->validate('mysite()*@gmail.com'));
         $this->assertFalse($field->validate('mysite..1234@yahoo.com'));
+    }
+
+    public function test_cast_null()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(null);
+    }
+
+    public function test_cast_empty()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->assertEquals('', $field->cast('    '));
+    }
+
+    public function test_cast_invalid_bool_true()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(true);
+    }
+
+    public function test_cast_invalid_bool_false()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(false);
+    }
+
+    public function test_cast_int()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(+1);
+    }
+
+    public function test_cast_float()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(2.056);
+    }
+
+    public function test_cast_invalid_object()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(new stdClass());
+    }
+
+    public function test_cast_valid()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->assertEquals('myinvalidemail', $field->cast(' myinvalidemail '));
+        $this->assertEquals('-7', $field->cast(' -7 '));
+        $this->assertEquals('name.surname@gmail.com', $field->cast(' name.surname@gmail.com '));
     }
 }

@@ -30,60 +30,60 @@ class FieldTypeTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_string()
     {
-        foreach (array(2, 'STRING') as $value) {
-            $fieldType = new FieldType(2);
+        foreach (array(5, 'STRING') as $value) {
+            $fieldType = new FieldType(5);
 
-            $this->assertEquals(2, $fieldType->value());
+            $this->assertEquals(5, $fieldType->value());
             $this->assertEquals('STRING', $fieldType->type());
         }
     }
 
     public function test_construct_double()
     {
-        foreach (array(3, 'DOUBLE') as $value) {
-            $fieldType = new FieldType(3);
+        foreach (array(10, 'DOUBLE') as $value) {
+            $fieldType = new FieldType(10);
 
-            $this->assertEquals(3, $fieldType->value());
+            $this->assertEquals(10, $fieldType->value());
             $this->assertEquals('DOUBLE', $fieldType->type());
         }
     }
 
     public function test_construct_regex()
     {
-        foreach (array(4, 'REGEX') as $value) {
-            $fieldType = new FieldType(4);
+        foreach (array(15, 'REGEX') as $value) {
+            $fieldType = new FieldType(15);
 
-            $this->assertEquals(4, $fieldType->value());
+            $this->assertEquals(15, $fieldType->value());
             $this->assertEquals('REGEX', $fieldType->type());
         }
     }
 
     public function test_construct_email()
     {
-        foreach (array(5, 'EMAIL') as $value) {
-            $fieldType = new FieldType(5);
+        foreach (array(20, 'EMAIL') as $value) {
+            $fieldType = new FieldType(20);
 
-            $this->assertEquals(5, $fieldType->value());
+            $this->assertEquals(20, $fieldType->value());
             $this->assertEquals('EMAIL', $fieldType->type());
         }
     }
 
     public function test_construct_bool()
     {
-        foreach (array(6, 'BOOL') as $value) {
-            $fieldType = new FieldType(6);
+        foreach (array(25, 'BOOL') as $value) {
+            $fieldType = new FieldType(25);
 
-            $this->assertEquals(6, $fieldType->value());
+            $this->assertEquals(25, $fieldType->value());
             $this->assertEquals('BOOL', $fieldType->type());
         }
     }
 
     public function test_construct_datetime()
     {
-        foreach (array(7, 'DATETIME') as $value) {
-            $fieldType = new FieldType(7);
+        foreach (array(30, 'DATETIME') as $value) {
+            $fieldType = new FieldType(30);
 
-            $this->assertEquals(7, $fieldType->value());
+            $this->assertEquals(30, $fieldType->value());
             $this->assertEquals('DATETIME', $fieldType->type());
         }
     }

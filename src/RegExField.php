@@ -6,12 +6,12 @@ class RegExField extends Field
 {
     private string $pattern;
 
-    public function __construct(string $name, string $pattern, bool $required = false, bool $nullable = true)
+    public function __construct(string $name, string $pattern, bool $required = false, bool $nullable = true, $default=null)
     {
         if (!$pattern)
             throw new \InvalidArgumentException('pattern is required argument');
 
-        parent::__construct($name, FieldType::REGEX, $required, $nullable);
+        parent::__construct($name, FieldType::REGEX, $required, $nullable, $default);
 
         $this->pattern = $pattern;
     }
@@ -29,5 +29,16 @@ class RegExField extends Field
             return false;
 
         return 1 == preg_match($this->pattern, $value);
+    }
+
+    public function cast($value): string
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if (is_string($value))
+            return trim($value);
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }

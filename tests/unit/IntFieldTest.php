@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require_once (__DIR__ . '/../../vendor/autoload.php');
+require_once(dirname(__DIR__, 2) . '/vendor/autoload.php');
 
 use \SchemaHelper\FieldType;
 use \SchemaHelper\IntField;
@@ -45,6 +45,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_construct_required_nullable()
     {
         $field = new IntField('id', true, true);
+
         $this->assertEquals('id', $field->name());
         $this->assertEquals(true, $field->required());
         $this->assertEquals(true, $field->nullable());
@@ -55,6 +56,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_construct_not_required_nullable()
     {
         $field = new IntField('id', false, true);
+
         $this->assertEquals('id', $field->name());
         $this->assertEquals(false, $field->required());
         $this->assertEquals(true, $field->nullable());
@@ -65,6 +67,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_construct_required_not_nullable()
     {
         $field = new IntField('id', true, false);
+
         $this->assertEquals('id', $field->name());
         $this->assertEquals(true, $field->required());
         $this->assertEquals(false, $field->nullable());
@@ -75,6 +78,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_construct_not_required_not_nullable()
     {
         $field = new IntField('id', false, false);
+
         $this->assertEquals('id', $field->name());
         $this->assertEquals(false, $field->required());
         $this->assertEquals(false, $field->nullable());
@@ -85,6 +89,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_wrong_string_value()
     {
         $field = new IntField('id');
+
         $this->assertFalse($field->validate(''));
         $this->assertFalse($field->validate('  '));
         $this->assertFalse($field->validate('0a'));
@@ -94,6 +99,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_value_no_min_no_max()
     {
         $field = new IntField('id');
+
         $this->assertTrue($field->validate(-1));
         $this->assertTrue($field->validate(0));
         $this->assertTrue($field->validate(+1));
@@ -106,6 +112,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_value_min_no_max()
     {
         $field = new IntField('id', false, false,-1);
+
         $this->assertFalse($field->validate(-2));
         $this->assertTrue($field->validate(-1));
         $this->assertTrue($field->validate(0));
@@ -120,6 +127,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_value_no_min_max()
     {
         $field = new IntField('id', false, false, null,-1);
+
         $this->assertTrue($field->validate(-2));
         $this->assertTrue($field->validate(-1));
         $this->assertFalse($field->validate(0));
@@ -134,6 +142,7 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
     public function test_value_min_max()
     {
         $field = new IntField('id', false, false,-2, -1);
+
         $this->assertFalse($field->validate(-3));
         $this->assertTrue($field->validate(-2));
         $this->assertTrue($field->validate(-1));
@@ -145,5 +154,80 @@ class IntFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field->validate('-1'));
         $this->assertFalse($field->validate('0'));
         $this->assertFalse($field->validate('+1'));
+    }
+
+    public function test_cast_null()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(null);
+    }
+
+    public function test_cast_empty()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast('    ');
+    }
+
+    public function test_cast_invalid_string()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast('invalid value');
+    }
+
+    public function test_cast_invalid_bool_true()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(true);
+    }
+
+    public function test_cast_invalid_bool_false()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(false);
+    }
+
+    public function test_cast_float()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(1.0);
+    }
+
+    public function test_cast_string_float()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast('1.0');
+    }
+
+    public function test_cast_invalid_object()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $field->cast(new stdClass());
+    }
+
+    public function test_cast_valid()
+    {
+        $field = new IntField('id', true, true);
+
+        $this->assertEquals(-3, $field->cast(-3));
+        $this->assertEquals(0, $field->cast(0));
+        $this->assertEquals(-2, $field->cast('  -2  '));
+        $this->assertEquals(6, $field->cast('  +6  '));
+        $this->assertEquals(0, $field->cast('  0  '));
     }
 }

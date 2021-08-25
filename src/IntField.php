@@ -7,12 +7,12 @@ final class IntField extends Field
     private ?int $min;
     private ?int $max;
 
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?int $min = null, ?int $max = null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?int $min = null, ?int $max = null, $default=null)
     {
         if (is_int($min) && is_int($max) && $min > $max)
             throw new \InvalidArgumentException('min greater than max');
 
-        parent::__construct($name, FieldType::INTEGER, $required, $nullable);
+        parent::__construct($name, FieldType::INTEGER, $required, $nullable, $default);
 
         $this->min = $min;
         $this->max = $max;
@@ -49,5 +49,23 @@ final class IntField extends Field
             return $val <= $this->max;
         else
             return true;
+    }
+
+    public function cast($value): int
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if (is_int($value))
+            return $value;
+        else if (is_string($value)) {
+            $value = trim($value);
+            $value = is_int($value) ? $value : $this->numeric($value);
+
+            if (is_int($value))
+                return $value;
+        }
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }

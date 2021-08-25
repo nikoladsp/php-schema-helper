@@ -7,12 +7,12 @@ final class DateTimeField extends Field
     private ?\DateTime $min;
     private ?\DateTime $max;
 
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?\DateTime $min = null, ?\DateTime $max = null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?\DateTime $min = null, ?\DateTime $max = null, $default=null)
     {
         if ($min instanceof \DateTime && $max instanceof \DateTime && $min > $max)
             throw new \InvalidArgumentException('min greater than max');
 
-        parent::__construct($name, FieldType::DATETIME, $required, $nullable);
+        parent::__construct($name, FieldType::DATETIME, $required, $nullable, $default);
 
         $this->min = $min;
         $this->max = $max;
@@ -32,9 +32,9 @@ final class DateTimeField extends Field
     {
         if (is_null($value))
             return $this->nullable();
-        elseif ($value instanceof \DateTime)
+        else if ($value instanceof \DateTime)
             $val = $value;
-        elseif (is_string($value)) {
+        else if (is_string($value)) {
             try {
                 $value = trim($value);
                 $val = new \DateTime($value);
@@ -52,5 +52,30 @@ final class DateTimeField extends Field
             return $val <= $this->max;
         else
             return true;
+    }
+
+    public function cast($value): \DateTime
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if ($value instanceof \DateTime)
+            return $value;
+        else if (is_numeric($value)) {
+            return new \DateTime('@' . $value);
+        }
+        else if (is_string($value)) {
+            try {
+                $value = trim($value);
+                if (is_numeric($value))
+                    $value = '@' . $value;
+
+                return new \DateTime($value);
+            } catch (\Exception $e) {
+                throw new \InvalidArgumentException('Invalid value');
+            }
+        }
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }

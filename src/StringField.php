@@ -7,7 +7,7 @@ final class StringField extends Field
     private ?int $min;
     private ?int $max;
 
-    public function __construct(string $name, bool $required = false, bool $nullable = true, ?int $min = null, ?int $max = null)
+    public function __construct(string $name, bool $required = false, bool $nullable = true, ?int $min = null, ?int $max = null, $default=null)
     {
         if (is_int($min) && is_int($max))
         {
@@ -22,7 +22,7 @@ final class StringField extends Field
             throw new \InvalidArgumentException('max must be non-negative numbers');
         }
 
-        parent::__construct($name, FieldType::STRING, $required, $nullable);
+        parent::__construct($name, FieldType::STRING, $required, $nullable, $default);
 
         $this->min = $min;
         $this->max = $max;
@@ -45,5 +45,16 @@ final class StringField extends Field
             return $len <= $this->max;
         else
             return true;
+    }
+
+    public function cast($value): string
+    {
+        if (is_null($value))
+            throw new \InvalidArgumentException('Invalid value');
+
+        if (is_string($value))
+            return trim($value);
+
+        throw new \InvalidArgumentException('Invalid value');
     }
 }
