@@ -2,30 +2,14 @@
 
 namespace SchemaHelper;
 
-final class DateTimeField extends Field
+final class DateTimeField extends RangedField
 {
-    private ?\DateTime $min;
-    private ?\DateTime $max;
-
     public function __construct(string $name, bool $required=false, bool $nullable=true, ?\DateTime $min = null, ?\DateTime $max = null, $default=null)
     {
         if ($min instanceof \DateTime && $max instanceof \DateTime && $min > $max)
             throw new \InvalidArgumentException('min greater than max');
 
-        parent::__construct($name, FieldType::DATETIME, $required, $nullable, $default);
-
-        $this->min = $min;
-        $this->max = $max;
-    }
-
-    public function min(): ?\DateTime
-    {
-        return $this->min;
-    }
-
-    public function max(): ?\DateTime
-    {
-        return $this->max;
+        parent::__construct($name, FieldType::DATETIME, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool
@@ -44,12 +28,15 @@ final class DateTimeField extends Field
         } else
             return false;
 
-        if ($this->min instanceof \DateTime && $this->max instanceof \DateTime)
-            return ($this->min <= $val) && ($val <= $this->max);
-        else if ($this->min instanceof \DateTime)
-            return $this->min <= $val;
-        else if ($this->max instanceof \DateTime)
-            return $val <= $this->max;
+        $min = $this->min();
+        $max = $this->max();
+
+        if ($min instanceof \DateTime && $max instanceof \DateTime)
+            return ($min <= $val) && ($val <= $max);
+        else if ($min instanceof \DateTime)
+            return $min <= $val;
+        else if ($max instanceof \DateTime)
+            return $val <= $max;
         else
             return true;
     }

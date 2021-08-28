@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-require_once (__DIR__ . '/../../vendor/autoload.php');
+require_once(dirname(__DIR__, 2) . '/vendor/autoload.php');
 
 use \SchemaHelper\FieldType;
 use \SchemaHelper\Field;
@@ -16,6 +16,11 @@ class FieldTest extends \PHPUnit\Framework\TestCase
             }
 
             public function validate($value): bool
+            {
+                return false;
+            }
+
+            public function cast($value): bool
             {
                 return false;
             }

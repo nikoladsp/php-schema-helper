@@ -2,30 +2,11 @@
 
 namespace SchemaHelper;
 
-final class IntField extends Field
+final class IntField extends RangedField
 {
-    private ?int $min;
-    private ?int $max;
-
     public function __construct(string $name, bool $required=false, bool $nullable=true, ?int $min = null, ?int $max = null, $default=null)
     {
-        if (is_int($min) && is_int($max) && $min > $max)
-            throw new \InvalidArgumentException('min greater than max');
-
-        parent::__construct($name, FieldType::INTEGER, $required, $nullable, $default);
-
-        $this->min = $min;
-        $this->max = $max;
-    }
-
-    public function min(): ?int
-    {
-        return $this->min;
-    }
-
-    public function max(): ?int
-    {
-        return $this->max;
+        parent::__construct($name, FieldType::INTEGER, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool
@@ -41,12 +22,15 @@ final class IntField extends Field
             return false;
         }
 
-        if (is_int($this->min) && is_int($this->max))
-            return ($this->min <= $val) && ($val <= $this->max);
-        else if (is_int($this->min))
-            return $this->min <= $val;
-        else if (is_int($this->max))
-            return $val <= $this->max;
+        $min = $this->min();
+        $max = $this->max();
+
+        if (is_int($min) && is_int($max))
+            return ($min <= $val) && ($val <= $max);
+        else if (is_int($min))
+            return $min <= $val;
+        else if (is_int($max))
+            return $val <= $max;
         else
             return true;
     }

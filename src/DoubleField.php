@@ -2,30 +2,11 @@
 
 namespace SchemaHelper;
 
-final class DoubleField extends Field
+final class DoubleField extends RangedField
 {
-    private ?float $min;
-    private ?float $max;
-
     public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null, $default=null)
     {
-        if (is_numeric($min) && is_numeric($max) && $min > $max)
-            throw new \InvalidArgumentException('min greater than max');
-
-        parent::__construct($name, FieldType::DOUBLE, $required, $nullable, $default);
-
-        $this->min = $min;
-        $this->max = $max;
-    }
-
-    public function min(): ?float
-    {
-        return $this->min;
-    }
-
-    public function max(): ?float
-    {
-        return $this->max;
+        parent::__construct($name, FieldType::DOUBLE, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool
@@ -41,12 +22,15 @@ final class DoubleField extends Field
             return false;
         }
 
-        if (is_float($this->min) && is_float($this->max))
-            return ($this->min <= $val) && ($val <= $this->max);
-        else if (is_float($this->min))
-            return $this->min <= $val;
-        else if (is_float($this->max))
-            return $val <= $this->max;
+        $min = $this->min();
+        $max = $this->max();
+
+        if (is_float($min) && is_float($max))
+            return ($min <= $val) && ($val <= $max);
+        else if (is_float($min))
+            return $min <= $val;
+        else if (is_float($max))
+            return $val <= $max;
         else
             return true;
     }
