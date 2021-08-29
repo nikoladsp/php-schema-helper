@@ -22,16 +22,19 @@ final class FieldType
             FieldType::init();
         }
 
-        if (is_null($value) || !array_key_exists($value, FieldType::$valueMap)) {
+        $valInt = is_int($value);
+        $valStr = is_string($value);
+
+        if (!$valInt && !$valStr)
             throw new \InvalidArgumentException('Invalid value');
-        } else if (is_int($value)) {
+        else if (is_null($value) || !array_key_exists($value, FieldType::$valueMap)) {
+            throw new \InvalidArgumentException('Invalid value');
+        } else if ($valInt) {
             $this->value = $value;
             $this->type = FieldType::$valueMap[$value];
-        } else if (is_string($value)) {
+        } else if ($valStr) {
             $this->value = FieldType::$valueMap[$value];
             $this->type = $value;
-        } else {
-            throw new \InvalidArgumentException('Invalid value');
         }
     }
 
@@ -48,9 +51,6 @@ final class FieldType
         if (!isset(FieldType::$valueMap))
         {
             $constants = (new \ReflectionClass(FieldType::class))->getConstants();
-            if (count($constants) !== count(array_unique(array_values($constants))))
-                throw new \InvalidArgumentException('Duplicate constant value');
-
             foreach($constants as $key => $value) {
                 FieldType::$valueMap[$key] = $value;
                 FieldType::$valueMap[$value] = $key;

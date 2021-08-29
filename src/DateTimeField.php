@@ -4,7 +4,7 @@ namespace SchemaHelper;
 
 final class DateTimeField extends RangedField
 {
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?\DateTime $min = null, ?\DateTime $max = null, $default=null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?\DateTime $min = null, ?\DateTime $max = null, ?\DateTime $default=null)
     {
         if ($min instanceof \DateTime && $max instanceof \DateTime && $min > $max)
             throw new \InvalidArgumentException('min greater than max');

@@ -4,7 +4,7 @@ namespace SchemaHelper;
 
 final class DoubleField extends RangedField
 {
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null, $default=null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null, ?float $default=null)
     {
         parent::__construct($name, FieldType::DOUBLE, $required, $nullable, $min, $max, $default);
     }
@@ -16,8 +16,6 @@ final class DoubleField extends RangedField
 
         try {
             $val = is_float($value) ? $value : $this->numeric($value);
-            if (!is_float($val) && !is_int($val))
-                return false;
         } catch (\InvalidArgumentException $e) {
             return false;
         }

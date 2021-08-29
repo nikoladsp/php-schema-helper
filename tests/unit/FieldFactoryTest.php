@@ -49,6 +49,12 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->nullable());
     }
 
+    public function test_wrong_type()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'unsupported', 'type' => 'WillNeverExists'));
+    }
+
     public function test_string()
     {
         $field = FieldFactory::create(array('name' => 'username'));

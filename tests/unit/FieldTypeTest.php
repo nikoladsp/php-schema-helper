@@ -18,6 +18,12 @@ class FieldTypeTest extends \PHPUnit\Framework\TestCase
         new FieldType(null);
     }
 
+    public function test_wrong_type()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new FieldType(new stdClass());
+    }
+
     public function test_construct_integer()
     {
         foreach (array(1, 'INTEGER') as $value) {

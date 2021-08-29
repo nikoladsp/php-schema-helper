@@ -28,6 +28,14 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate(null));
     }
 
+    public function test_validate_unsupported()
+    {
+        $field = new EmailField('email');
+
+        $this->assertFalse($field->validate(new stdClass()));
+        $this->assertFalse($field->validate(new EmailField('email')));
+    }
+
     public function test_valid_email()
     {
         $field = new EmailField('email', false,false);

@@ -42,6 +42,14 @@ class DoubleFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field->validate('-1'));
     }
 
+    public function test_validate_unsupported()
+    {
+        $field = new DoubleField('cost');
+
+        $this->assertFalse($field->validate(new stdClass()));
+        $this->assertFalse($field->validate(new DoubleField('cost')));
+    }
+
     public function test_construct_required_nullable()
     {
         $field = new DoubleField('cost', true, true);

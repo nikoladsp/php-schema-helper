@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <phpunit bootstrap="vendor/autoload.php"
-         strict="true"
          colors="true"
          verbose="true"
          stopOnError="false"
@@ -14,4 +13,14 @@
             <directory suffix=".php">tests/unit</directory>
         </testsuite>
     </testsuites>
+    <coverage cacheDirectory="cache"
+              includeUncoveredFiles="true"
+              processUncoveredFiles="true"
+              pathCoverage="false"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="false">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
 </phpunit>

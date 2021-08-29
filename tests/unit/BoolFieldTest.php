@@ -63,6 +63,14 @@ class BoolFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field->validate(false));
     }
 
+    public function test_validate_unsupported()
+    {
+        $field = new BoolField('authenticated');
+
+        $this->assertFalse($field->validate(new stdClass()));
+        $this->assertFalse($field->validate(new BoolField('authenticated')));
+    }
+
     public function test_valid_string()
     {
         $field = new BoolField('authenticated');

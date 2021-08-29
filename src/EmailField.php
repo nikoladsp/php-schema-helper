@@ -4,20 +4,9 @@ namespace SchemaHelper;
 
 class EmailField extends Field
 {
-    public function __construct(string $name, bool $required = false, bool $nullable = true, $default=null)
+    public function __construct(string $name, bool $required = false, bool $nullable = true, ?string $default=null)
     {
         parent::__construct($name, FieldType::EMAIL, $required, $nullable, $default);
-    }
-
-    private function email_strip_comments($comment, $email, $replace=''){
-
-        while (1){
-            $new = preg_replace("!$comment!", $replace, $email);
-            if (strlen($new) == strlen($email)){
-                return $email;
-            }
-            $email = $new;
-        }
     }
 
     public function validate($value): bool

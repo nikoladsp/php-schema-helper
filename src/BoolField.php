@@ -7,7 +7,7 @@ final class BoolField extends Field
     private static array $trueVals = array('y', 'yes', 'true', 'on', '1');
     private static array $falseVals = array( 'n', 'no', 'false', 'off', '0');
 
-    public function __construct(string $name, bool $required=false, bool $nullable=true, $default=null)
+    public function __construct(string $name, bool $required=false, bool $nullable=true, ?bool $default=null)
     {
         parent::__construct($name, FieldType::BOOL, $required, $nullable, $default);
     }

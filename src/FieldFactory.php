@@ -2,11 +2,13 @@
 
 namespace SchemaHelper;
 
-class FieldFactory
+final class FieldFactory
 {
+    /**
+     * @codeCoverageIgnore
+     */
     private function __construct()
     {
-
     }
 
     public static function create(array $params, string $defaultName = null): Field

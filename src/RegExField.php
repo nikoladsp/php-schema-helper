@@ -6,7 +6,7 @@ class RegExField extends Field
 {
     private string $pattern;
 
-    public function __construct(string $name, string $pattern, bool $required = false, bool $nullable = true, $default=null)
+    public function __construct(string $name, string $pattern, bool $required = false, bool $nullable = true, ?string $default=null)
     {
         if (!$pattern)
             throw new \InvalidArgumentException('pattern is required argument');

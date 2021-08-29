@@ -13,6 +13,14 @@ class RegExFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType("REGEX"), $field->type());
     }
 
+    public function test_validate_unsupported()
+    {
+        $field = new RegExField('id', '*');
+
+        $this->assertFalse($field->validate(new stdClass()));
+        $this->assertFalse($field->validate(new RegExField('id', '*')));
+    }
+
     public function test_pattern()
     {
         $field = new RegExField('id', '*');

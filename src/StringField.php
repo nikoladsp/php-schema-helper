@@ -4,7 +4,7 @@ namespace SchemaHelper;
 
 final class StringField extends RangedField
 {
-    public function __construct(string $name, bool $required = false, bool $nullable = true, ?int $min = null, ?int $max = null, $default=null)
+    public function __construct(string $name, bool $required = false, bool $nullable = true, ?int $min = null, ?int $max = null, ?string $default=null)
     {
         if (is_int($min) && is_int($max))
         {

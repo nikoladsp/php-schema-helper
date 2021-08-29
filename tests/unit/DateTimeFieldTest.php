@@ -28,6 +28,14 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate(null));
     }
 
+    public function test_validate_unsupported()
+    {
+        $field = new DateTimeField('timestamp', false, true);
+
+        $this->assertFalse($field->validate(new stdClass()));
+        $this->assertFalse($field->validate(new DateTimeField('timestamp')));
+    }
+
     public function test_min_greater_than_max()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -218,5 +226,15 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(5, $timestamp->format('H'));
         $this->assertEquals(25, $timestamp->format('i'));
         $this->assertEquals(6, $timestamp->format('s'));
+
+        // Saturday, February 17, 2018 3:09:57 PM
+        $timestamp = $field->cast(new \DateTime('2018-02-17 15:09:57'));
+        $this->assertInstanceOf(\DateTime::class, $timestamp);
+        $this->assertEquals(2018, $timestamp->format('Y'));
+        $this->assertEquals(2, $timestamp->format('m'));
+        $this->assertEquals(17, $timestamp->format('d'));
+        $this->assertEquals(15, $timestamp->format('H'));
+        $this->assertEquals(9, $timestamp->format('i'));
+        $this->assertEquals(57, $timestamp->format('s'));
     }
 }
