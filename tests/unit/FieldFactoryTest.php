@@ -61,6 +61,12 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field instanceof StringField);
     }
 
+    public function test_string_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'username', 'format' => 'c'));
+    }
+
     public function test_string_min_set()
     {
         $field = FieldFactory::create(array('min' => 2), 'username');
@@ -91,6 +97,12 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field instanceof RegExField);
     }
 
+    public function test_regex_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'username', 'type' => 'regex', 'pattern' => '*', 'format' => 'c'));
+    }
+
     public function test_regex_min_set()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -113,6 +125,12 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $field = FieldFactory::create(array('name' => 'email', 'type' => 'email'));
         $this->assertTrue($field instanceof EmailField);
+    }
+
+    public function test_email_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'email', 'type' => 'email', 'format' => 'c'));
     }
 
     public function test_email_min_set()
@@ -139,6 +157,12 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field instanceof BoolField);
     }
 
+    public function test_bool_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'active', 'type' => 'bool', 'format' => 'c'));
+    }
+
     public function test_bool_min_set()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -163,15 +187,33 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field instanceof IntField);
     }
 
+    public function test_int_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'id', 'type' => 'integer', 'format' => 'c'));
+    }
+
     public function test_double()
     {
         $field = FieldFactory::create(array('name' => 'id', 'type' => 'double'));
         $this->assertTrue($field instanceof DoubleField);
     }
 
+    public function test_double_format_set()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        FieldFactory::create(array('name' => 'id', 'type' => 'double', 'format' => 'c'));
+    }
+
     public function test_datetime()
     {
         $field = FieldFactory::create(array('name' => 'timestamp', 'type' => 'datetime'));
         $this->assertTrue($field instanceof DateTimeField);
+    }
+
+    public function test_datetime_format_set()
+    {
+        $field = FieldFactory::create(array('name' => 'timestamp', 'type' => 'datetime', 'format' => 'r'));
+        $this->assertEquals('r', $field->format());
     }
 }

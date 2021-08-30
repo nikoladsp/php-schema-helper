@@ -2,7 +2,7 @@
 
 namespace SchemaHelper;
 
-class EmailField extends Field
+final class EmailField extends Field
 {
     public function __construct(string $name, bool $required = false, bool $nullable = true, ?string $default=null)
     {

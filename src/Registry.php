@@ -2,7 +2,7 @@
 
 namespace SchemaHelper;
 
-class Registry
+final class Registry
 {
     private static ?Registry $instance = null;
     private array $schemaData = array();
