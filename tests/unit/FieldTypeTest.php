@@ -24,6 +24,12 @@ class FieldTypeTest extends \PHPUnit\Framework\TestCase
         new FieldType(new stdClass());
     }
 
+    public function test_types()
+    {
+        static $expected = array('INTEGER', 'STRING', 'DOUBLE', 'REGEX', 'EMAIL', 'BOOL', 'DATETIME', 'SCHEMA');
+        $this->assertTrue(!array_diff($expected, FieldType::types()));
+    }
+
     public function test_construct_integer()
     {
         foreach (array(1, 'INTEGER') as $value) {
@@ -91,6 +97,16 @@ class FieldTypeTest extends \PHPUnit\Framework\TestCase
 
             $this->assertEquals(30, $fieldType->value());
             $this->assertEquals('DATETIME', $fieldType->type());
+        }
+    }
+
+    public function test_construct_schema()
+    {
+        foreach (array(35, 'SCHEMA') as $value) {
+            $fieldType = new FieldType(35);
+
+            $this->assertEquals(35, $fieldType->value());
+            $this->assertEquals('SCHEMA', $fieldType->type());
         }
     }
 

@@ -15,6 +15,7 @@ final class FieldType
     const EMAIL = 20;
     const BOOL = 25;
     const DATETIME = 30;
+    const SCHEMA = 35;
 
     public function __construct($value)
     {
@@ -38,22 +39,30 @@ final class FieldType
         }
     }
 
-    public function value(): int {
+    public function value(): int
+    {
         return $this->value;
     }
 
-    public function type(): string {
+    public function type(): string
+    {
         return $this->type;
+    }
+
+    public static function types(): array
+    {
+        self::init();
+        return array_keys(self::$valueMap);
     }
 
     private static function init()
     {
-        if (!isset(FieldType::$valueMap))
+        if (!isset(self::$valueMap))
         {
             $constants = (new \ReflectionClass(FieldType::class))->getConstants();
             foreach($constants as $key => $value) {
-                FieldType::$valueMap[$key] = $value;
-                FieldType::$valueMap[$value] = $key;
+                self::$valueMap[$key] = $value;
+                self::$valueMap[$value] = $key;
             }
         }
     }

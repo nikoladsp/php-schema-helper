@@ -27,7 +27,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className = 'MySchemaClass';
         $this->assertFalse($reg->registered($className));
 
-        $reg->add($className, array('model1'), array('field1'));
+        $reg->add($className, '', array('model1'), array('field1'));
         $this->assertTrue($reg->registered($className));
     }
 
@@ -39,7 +39,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $model = array('model1', 'model2');
         $fields = array('field1', 'field2');
 
-        $reg->add($className, $model, $fields);
+        $reg->add($className, '', $model, $fields);
         $this->assertEquals($model, $reg->model($className));
         $this->assertEquals($fields, $reg->fields($className));
     }
@@ -51,10 +51,10 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className = 'MySchemaClass';
         $model = array('model1', 'model2');
         $fields = array('field1', 'field2');
-        $reg->add($className, $model, $fields);
+        $reg->add($className, '', $model, $fields);
 
         $this->expectException(\InvalidArgumentException::class);
-        $reg->add($className, array('model1'), array('field1'));
+        $reg->add($className, '', array('model1'), array('field1'));
     }
 
     public function test_remove_not_registered()
@@ -70,7 +70,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $reg = Registry::instance();
         $className = 'MySchemaClass';
 
-        $reg->add($className, array('model1'), array('field1'));
+        $reg->add($className, '', array('model1'), array('field1'));
         $this->assertTrue($reg->registered($className));
 
         $reg->remove($className);
@@ -82,7 +82,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $reg = Registry::instance();
         $this->assertEquals(0, $reg->count());
 
-        $reg->add('MySchemaClass', array('model1'), array('field1'));
+        $reg->add('MySchemaClass','', array('model1'), array('field1'));
         $this->assertEquals(1, $reg->count());
     }
 
@@ -92,11 +92,11 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className1 = 'MySchemaClass1';
         $className2 = 'MySchemaClass2';
 
-        $reg->add($className1, array('model1'), array('field1'));
-        $reg->add($className2, array('model2'), array('field2'));
+        $reg->add($className1, '', array('model1'), array('field1'));
+        $reg->add($className2, '', array('model2'), array('field2'));
 
-        $this->assertEquals(2, count($reg->get($className1)));
-        $this->assertEquals(2, count($reg->get($className2)));
+        $this->assertEquals(3, count($reg->get($className1)));
+        $this->assertEquals(3, count($reg->get($className2)));
 
         $reg->clear();
 
@@ -110,7 +110,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $reg = Registry::instance();
 
         $this->expectException(\InvalidArgumentException::class);
-        $reg->add('MySchemaClass', array(), array('field1'));
+        $reg->add('MySchemaClass', '', array(), array('field1'));
     }
 
     public function test_add_empty_fields()
@@ -118,7 +118,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $reg = Registry::instance();
 
         $this->expectException(\InvalidArgumentException::class);
-        $reg->add('MySchemaClass', array('model1'), array());
+        $reg->add('MySchemaClass', '', array('model1'), array());
     }
 
     public function test_get_not_registered()
@@ -136,10 +136,10 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className = 'MySchemaClass';
         $model = array('model1', 'model2');
         $fields = array('field1', 'field2');
-        $reg->add($className, $model, $fields);
+        $reg->add($className, $className, $model, $fields);
 
         $schemaData = $reg->get($className);
-        $this->assertEquals(2, count($schemaData));
+        $this->assertEquals(3, count($schemaData));
         $this->assertEquals($model, $schemaData['model']);
         $this->assertEquals($fields, $schemaData['fields']);
     }
@@ -159,7 +159,7 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className = 'MySchemaClass';
         $model = array('model1', 'model2');
         $fields = array('field1', 'field2');
-        $reg->add($className, $model, $fields);
+        $reg->add($className, $className, $model, $fields);
 
         $this->assertEquals($model, $reg->model($className));
     }
@@ -179,8 +179,29 @@ class RegistryTest extends \PHPUnit\Framework\TestCase
         $className = 'MySchemaClass';
         $model = array('model1', 'model2');
         $fields = array('field1', 'field2');
-        $reg->add($className, $model, $fields);
+        $reg->add($className, $className, $model, $fields);
 
         $this->assertEquals($fields, $reg->fields($className));
+    }
+
+    public function test_model_class_not_registered()
+    {
+        $reg = Registry::instance();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $reg->modelClass('MySchemaClass');
+    }
+
+    public function test_model_class_registered()
+    {
+        $reg = Registry::instance();
+
+        $modelClassName = 'MyModelClass';
+        $className = 'MySchemaClass';
+        $model = array('model1', 'model2');
+        $fields = array('field1', 'field2');
+        $reg->add($className, $modelClassName, $model, $fields);
+
+        $this->assertEquals($modelClassName, $reg->modelClass($className));
     }
 }

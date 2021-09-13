@@ -25,7 +25,7 @@ final class Registry
         return array_key_exists($schema, $this->schemaData);
     }
 
-    public function add(string $schema, array $model, array $fields)
+    public function add(string $schema, string $modelClass, array $model, array $fields)
     {
         if (isset($this->schemaData[$schema]))
             throw new \InvalidArgumentException($schema . ' already has been registered');
@@ -34,6 +34,7 @@ final class Registry
         else if (empty($fields))
             throw new \InvalidArgumentException($schema . ' fields are empty');
 
+        $this->schemaData[$schema]['modelClass'] = $modelClass;
         $this->schemaData[$schema]['model'] = $model;
         $this->schemaData[$schema]['fields'] = $fields;
     }
@@ -62,6 +63,14 @@ final class Registry
             throw new \InvalidArgumentException($schema . ' has not been registered');
 
         return $this->schemaData[$schema];
+    }
+
+    public function modelClass(string $schema): string
+    {
+        if (!isset($this->schemaData[$schema]))
+            throw new \InvalidArgumentException($schema . ' has not been registered');
+
+        return $this->schemaData[$schema]['modelClass'];
     }
 
     public function model(string $schema): array
