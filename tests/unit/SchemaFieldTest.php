@@ -32,6 +32,16 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType('SCHEMA'), $field->type());
     }
 
+    public function test_default()
+    {
+        $field = new SchemaField('token', new TestSchema());
+        $this->assertNull($field->default());
+
+        $value = new TestSchema();
+        $field = new SchemaField('token', new TestSchema(), false, true, $value);
+        $this->assertEquals($value, $field->default());
+    }
+
     public function test_pattern()
     {
         $field = new SchemaField('token', new TestSchema());
@@ -49,7 +59,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
         $field = new SchemaField('token', new TestSchema(), false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new SchemaField('token', new TestSchema(), false, false);
+        $field = new SchemaField('token', new TestSchema(), false, false, new TestSchema());
         $this->assertFalse($field->validate(null));
     }
 
@@ -116,63 +126,63 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate($model));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('');
+        $field->dump('');
     }
 
-    public function test_cast_invalid_bool_true()
+    public function test_dump_invalid_bool_true()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
+        $field->dump(true);
     }
 
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_false()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(false);
     }
 
-    public function test_cast_int()
+    public function test_dump_int()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(+1);
+        $field->dump(+1);
     }
 
-    public function test_cast_float()
+    public function test_dump_float()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(2.056);
+        $field->dump(2.056);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_invalid_object()
     {
         $field = new SchemaField('token', new TestSchema());
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(new stdClass());
     }
 
-    public function test_cast_valid()
+    public function test_dump_valid()
     {
         $field = new SchemaField('token', new TestSchema());
 
@@ -181,15 +191,15 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
         $model->username = 'testuser';
         $model->description = 'desc...';
 
-        $casted = $field->cast($model);
-        $this->assertEquals($model->id, $casted->id);
-        $this->assertEquals($model->username, $casted->username);
-        $this->assertEquals($model->description, $casted->description);
+        $dumped = $field->dump($model);
+        $this->assertEquals($model->id, $dumped->id);
+        $this->assertEquals($model->username, $dumped->username);
+        $this->assertEquals($model->description, $dumped->description);
 
         $model = array('id' => 3, 'username' => 'testuser', 'description' => 'desc...');
-        $casted = $field->cast($model);
-        $this->assertEquals($model['id'], $casted->id);
-        $this->assertEquals($model['username'], $casted->username);
-        $this->assertEquals($model['description'], $casted->description);
+        $dumped = $field->dump($model);
+        $this->assertEquals($model['id'], $dumped->id);
+        $this->assertEquals($model['username'], $dumped->username);
+        $this->assertEquals($model['description'], $dumped->description);
     }
 }

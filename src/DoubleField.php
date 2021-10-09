@@ -33,7 +33,7 @@ final class DoubleField extends RangedField
             return true;
     }
 
-    public function cast($value): float
+    public function dump($value): float
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

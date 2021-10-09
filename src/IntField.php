@@ -35,7 +35,7 @@ final class IntField extends RangedField
             return true;
     }
 
-    public function cast($value): int
+    public function dump($value): int
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

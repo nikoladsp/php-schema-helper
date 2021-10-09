@@ -20,11 +20,21 @@ class RangedFieldTest extends \PHPUnit\Framework\TestCase
                 return false;
             }
 
-            public function cast($value): bool
+            public function dump($value): bool
             {
                 return false;
             }
         };
+    }
+
+    public function test_default()
+    {
+        $field = $this->create_ranged_field_instance('id', FieldType::INTEGER, false, true, null,-2);
+        $this->assertNull($field->default());
+
+        $value = 7;
+        $field = $this->create_ranged_field_instance('id', FieldType::INTEGER, false, true, null,-2, $value);
+        $this->assertEquals($value, $field->default());
     }
 
     public function test_construct_no_name()

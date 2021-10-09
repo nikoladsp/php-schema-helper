@@ -2,7 +2,7 @@
 
 namespace SchemaHelper;
 
-abstract class Field
+abstract class Field implements Serializable
 {
     private string $name;
     private FieldType $type;
@@ -14,6 +14,8 @@ abstract class Field
     {
         if (!$name)
             throw new \InvalidArgumentException('name is required argument');
+//        else if ($nullable === false && is_null($default))
+//            throw new \InvalidArgumentException('nullable is false: default can not be set to null');
 
         $this->name = $name;
         $this->type = ($type instanceof FieldType) ? $type : new FieldType($type);
@@ -46,10 +48,6 @@ abstract class Field
     {
         return $this->default;
     }
-
-    abstract public function validate($value): bool;
-
-    abstract public function cast($value);
 
     protected static function numeric($value) {
         if (!is_numeric($value))

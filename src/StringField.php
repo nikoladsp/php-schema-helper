@@ -40,7 +40,7 @@ final class StringField extends RangedField
             return true;
     }
 
-    public function cast($value): string
+    public function dump($value): string
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

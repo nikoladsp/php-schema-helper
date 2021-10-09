@@ -19,12 +19,22 @@ class DoubleFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType("DOUBLE"), $field->type());
     }
 
+    public function test_default()
+    {
+        $field = new DoubleField('cost');
+        $this->assertNull($field->default());
+
+        $value = -0.723;
+        $field = new DoubleField('cost', false, true, null, null, $value);
+        $this->assertEquals($value, $field->default());
+    }
+
     public function test_nullable()
     {
         $field = new DoubleField('cost', false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new DoubleField('cost', false, false);
+        $field = new DoubleField('cost', false, false, null, null, 3.09);
         $this->assertFalse($field->validate(null));
     }
 
@@ -74,7 +84,7 @@ class DoubleFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_required_not_nullable()
     {
-        $field = new DoubleField('cost', true, false);
+        $field = new DoubleField('cost', true, false, null, null, -4.5);
 
         $this->assertEquals('cost', $field->name());
         $this->assertEquals(true, $field->required());
@@ -85,7 +95,7 @@ class DoubleFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_not_required_not_nullable()
     {
-        $field = new DoubleField('cost', false, false);
+        $field = new DoubleField('cost', false, false, null, null, -2.1);
 
         $this->assertEquals('cost', $field->name());
         $this->assertEquals(false, $field->required());
@@ -164,63 +174,63 @@ class DoubleFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate('+1.0'));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('    ');
+        $field->dump('    ');
     }
 
-    public function test_cast_invalid_string()
+    public function test_dump_invalid_string()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('invalid value');
+        $field->dump('invalid value');
     }
 
-    public function test_cast_invalid_bool_true()
+    public function test_dump_invalid_bool_true()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
+        $field->dump(true);
     }
 
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_false()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(false);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_invalid_object()
     {
         $field = new DoubleField('cost', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(new stdClass());
     }
 
-    public function test_cast_valid()
+    public function test_dump_valid()
     {
         $field = new DoubleField('cost', true,true);
 
-        $this->assertEquals(-1.02, $field->cast(-1.02));
-        $this->assertEquals(-3, $field->cast(-3));
-        $this->assertEquals(0.0, $field->cast(0));
-        $this->assertEquals(-2.07, $field->cast('  -2.07  '));
-        $this->assertEquals(6, $field->cast('  +6  '));
-        $this->assertEquals(0, $field->cast('  0.0  '));
+        $this->assertEquals(-1.02, $field->dump(-1.02));
+        $this->assertEquals(-3, $field->dump(-3));
+        $this->assertEquals(0.0, $field->dump(0));
+        $this->assertEquals(-2.07, $field->dump('  -2.07  '));
+        $this->assertEquals(6, $field->dump('  +6  '));
+        $this->assertEquals(0, $field->dump('  0.0  '));
     }
 }

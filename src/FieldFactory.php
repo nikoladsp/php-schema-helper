@@ -4,9 +4,6 @@ namespace SchemaHelper;
 
 final class FieldFactory
 {
-    /**
-     * @codeCoverageIgnore
-     */
     private function __construct()
     {
     }
@@ -23,6 +20,7 @@ final class FieldFactory
         $format = $params['format'] ?? null;
         $min = $params['min'] ?? null;
         $max = $params['max'] ?? null;
+        $default = $params['default'] ?? null;
 
         static $rangedFields = ['INTEGER', 'STRING', 'DOUBLE', 'DATETIME'];
         if ((!is_null($min) || !is_null($max)) && !in_array($type, $rangedFields))
@@ -33,15 +31,22 @@ final class FieldFactory
             throw new \InvalidArgumentException($type . ' does not support format');
 
         switch ($type) {
-            case 'INTEGER': return new IntField($name, $required, $nullable, $min, $max);
-            case 'STRING': return new StringField($name, $required, $nullable, $min, $max);
-            case 'DOUBLE': return new DoubleField($name, $required, $nullable, $min, $max);
-            case 'REGEX': return new RegExField($name, $params['pattern'] ?? null, $required, $nullable);
-            case 'EMAIL': return new EmailField($name, $required, $nullable);
-            case 'BOOL': return new BoolField($name, $required, $nullable);
-            case 'DATETIME': return new DateTimeField($name, $format ?? 'c', $required, $nullable, $min, $max);
+            case 'INTEGER': return new IntField($name, $required, $nullable, $min, $max, $default);
+            case 'STRING': return new StringField($name, $required, $nullable, $min, $max, $default);
+            case 'DOUBLE': return new DoubleField($name, $required, $nullable, $min, $max, $default);
+            case 'REGEX': return new RegExField($name, $params['pattern'] ?? null, $required, $nullable, $default);
+            case 'EMAIL': return new EmailField($name, $required, $nullable, $default);
+            case 'BOOL': return new BoolField($name, $required, $nullable, $default);
+            case 'DATETIME': return new DateTimeField($name, $format ?? 'c', $required, $nullable, $min, $max, $default);
             default:
+            {
+                $schemaName = $params['type'] ?? null;
+                if (!is_null($schemaName) && class_exists($schemaName)) {
+                    return new SchemaField($name, new $schemaName, $required, $nullable, $default);
+                }
+
                 throw new \InvalidArgumentException('Invalid type');
+            }
         }
     }
 }

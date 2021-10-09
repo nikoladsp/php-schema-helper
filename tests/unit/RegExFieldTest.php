@@ -13,6 +13,16 @@ class RegExFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType("REGEX"), $field->type());
     }
 
+    public function test_default()
+    {
+        $field = new RegExField('id', '*');
+        $this->assertNull($field->default());
+
+        $value = '\w';
+        $field = new RegExField('id', '*', false, true, $value);
+        $this->assertEquals($value, $field->default());
+    }
+
     public function test_validate_unsupported()
     {
         $field = new RegExField('id', '*');
@@ -44,7 +54,7 @@ class RegExFieldTest extends \PHPUnit\Framework\TestCase
         $field = new RegExField('id', '*', false,true);
         $this->assertTrue($field->validate(null));
 
-        $field = new RegExField('id', '*', false,false);
+        $field = new RegExField('id', '*', false,false, '*');
         $this->assertFalse($field->validate(null));
     }
 
@@ -64,66 +74,66 @@ class RegExFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($field->validate('main()'));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
-        $this->assertEquals('', $field->cast('    '));
+        $this->assertEquals('', $field->dump('    '));
     }
 
-    public function test_cast_invalid_bool_true()
-    {
-        $field = new RegExField('id', '/Ain/', true,true);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
-    }
-
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_true()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(true);
     }
 
-    public function test_cast_int()
+    public function test_dump_invalid_bool_false()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(+1);
+        $field->dump(false);
     }
 
-    public function test_cast_float()
+    public function test_dump_int()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(2.056);
+        $field->dump(+1);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_float()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(2.056);
     }
 
-    public function test_cast_valid()
+    public function test_dump_invalid_object()
     {
         $field = new RegExField('id', '/Ain/', true,true);
 
-        $this->assertEquals('myinvalidregex', $field->cast(' myinvalidregex '));
-        $this->assertEquals('-7', $field->cast(' -7 '));
+        $this->expectException(\InvalidArgumentException::class);
+        $field->dump(new stdClass());
+    }
+
+    public function test_dump_valid()
+    {
+        $field = new RegExField('id', '/Ain/', true,true);
+
+        $this->assertEquals('myinvalidregex', $field->dump(' myinvalidregex '));
+        $this->assertEquals('-7', $field->dump(' -7 '));
     }
 }

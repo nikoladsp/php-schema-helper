@@ -2,13 +2,20 @@
 
 namespace SchemaHelper;
 
-abstract class Schema
+abstract class Schema implements Serializable
 {
     private static ?string $model = null;
 
     public function __construct()
     {
         $this->init();
+    }
+
+    private static function objToArray($obj) {
+        if (is_object($obj))
+            $obj = get_object_vars($obj);
+
+        return is_array($obj) ? array_map(__METHOD__, $obj) : $obj;
     }
 
     public function model(): string
@@ -62,9 +69,6 @@ abstract class Schema
 
         $rc = new \ReflectionClass($className);
 
-//        $sc = $rc->isSubclassOf('\SchemaHelper\Schema');
-
-        $basicTypes = FieldType::types();
         $constants = $rc->getConstants();
         $model = self::getModelClass($rc);
         $fields = array();
@@ -72,22 +76,42 @@ abstract class Schema
         foreach ($constants as $key => $params) {
             $name = $params['name'] ?? strtolower($key);
             $fields[$name] = FieldFactory::create($params, $name);
-
-//            if (array_key_exists('type', $params) && !array_key_exists($params['type'], $basicTypes)) {
-//                $fields[$name] = ;
-//            } else {
-//                $fields[$name] = FieldFactory::create($params, $name);
-//            }
         }
 
         $reg->add($className, $model, self::getModelProperties($model), $fields);
     }
 
-    public function dump(Model $instance, bool $stopOnError = false): array
+    public function validate($value): bool
     {
-        if (is_null($instance))
-            throw new \InvalidArgumentException('Object can not be null');
-        else if (!$instance instanceof Model)
+        if (! is_array($value) && ! ($value instanceof Model) )
+            return false;
+
+        $reg = Registry::instance();
+        $className = get_class($this);
+        if (!$reg->registered($className))
+            throw new \InvalidArgumentException($className . ' have not been registered');
+
+        $schemaData = $reg->get($className);
+        $model = $schemaData['model'];
+        $fields = $schemaData['fields'];
+
+        if ($value instanceof Model)
+            $value = self::objToArray($value);
+
+        foreach ($model as $attr) {
+            if (array_key_exists($attr, $fields)) {
+                $field = $fields[$attr];
+                if (!$field->validate($value[$attr]))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function dump($instance, bool $stopOnError = false): array
+    {
+        if (!$instance instanceof Model)
             throw new \InvalidArgumentException('Object not instance of Model');
 
         $reg = Registry::instance();
@@ -104,7 +128,7 @@ abstract class Schema
             foreach ($model as $attr) {
                 if (array_key_exists($attr, $fields)) {
                     $field = $fields[$attr];
-                    $result[$attr] = $field->cast($instance->$attr);
+                    $result[$attr] = $field->dump($instance->$attr);
                 }
             }
         } else {
@@ -113,7 +137,7 @@ abstract class Schema
                 if (array_key_exists($attr, $fields)) {
                     try {
                         $field = $fields[$attr];
-                        $result[$attr] = $field->cast($instance->$attr);
+                        $result[$attr] = $field->dump($instance->$attr);
                     } catch (\InvalidArgumentException $e) {
                         $errors[$attr] = $e->getMessage();
                     }

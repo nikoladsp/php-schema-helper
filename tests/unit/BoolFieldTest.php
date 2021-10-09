@@ -16,11 +16,14 @@ class BoolFieldTest extends \PHPUnit\Framework\TestCase
     public function test_type()
     {
         $field = new BoolField('authenticated');
-        $this->assertEquals(new FieldType("BOOL"), $field->type());
+        $this->assertEquals(new FieldType('BOOL'), $field->type());
     }
 
     public function test_default()
     {
+        $field = new BoolField('authenticated', true, true);
+        $this->assertNull($field->default());
+
         $field = new BoolField('authenticated', true, false, true);
         $this->assertEquals(true, $field->default());
 
@@ -33,7 +36,7 @@ class BoolFieldTest extends \PHPUnit\Framework\TestCase
         $field = new BoolField('authenticated', false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new BoolField('authenticated', false, false);
+        $field = new BoolField('authenticated', false, false, false);
         $this->assertFalse($field->validate(null));
     }
 
@@ -110,57 +113,57 @@ class BoolFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate(''));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new BoolField('authenticated', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new BoolField('authenticated', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('    ');
+        $field->dump('    ');
     }
 
-    public function test_cast_invalid()
+    public function test_dump_invalid()
     {
         $field = new BoolField('authenticated', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('yep');
+        $field->dump('yep');
     }
 
-    public function test_cast_true()
+    public function test_dump_true()
     {
         $field = new BoolField('authenticated', true, true);
 
-        $this->assertEquals(true, $field->cast(-1));
-        $this->assertEquals(true, $field->cast(1.02));
-        $this->assertEquals(true, $field->cast(true));
-        $this->assertEquals(true, $field->cast('y'));
-        $this->assertEquals(true, $field->cast('Y'));
-        $this->assertEquals(true, $field->cast('YeS'));
-        $this->assertEquals(true, $field->cast('tRUe'));
-        $this->assertEquals(true, $field->cast('oN'));
-        $this->assertEquals(true, $field->cast('1'));
+        $this->assertEquals(true, $field->dump(-1));
+        $this->assertEquals(true, $field->dump(1.02));
+        $this->assertEquals(true, $field->dump(true));
+        $this->assertEquals(true, $field->dump('y'));
+        $this->assertEquals(true, $field->dump('Y'));
+        $this->assertEquals(true, $field->dump('YeS'));
+        $this->assertEquals(true, $field->dump('tRUe'));
+        $this->assertEquals(true, $field->dump('oN'));
+        $this->assertEquals(true, $field->dump('1'));
     }
 
-    public function test_cast_false()
+    public function test_dump_false()
     {
         $field = new BoolField('authenticated', true, true);
 
-        $this->assertEquals(false, $field->cast(0));
-        $this->assertEquals(false, $field->cast(0.00));
-        $this->assertEquals(false, $field->cast(false));
-        $this->assertEquals(false, $field->cast('n'));
-        $this->assertEquals(false, $field->cast('N'));
-        $this->assertEquals(false, $field->cast('nO'));
-        $this->assertEquals(false, $field->cast('fAlSe'));
-        $this->assertEquals(false, $field->cast('OfF'));
-        $this->assertEquals(false, $field->cast('0'));
+        $this->assertEquals(false, $field->dump(0));
+        $this->assertEquals(false, $field->dump(0.00));
+        $this->assertEquals(false, $field->dump(false));
+        $this->assertEquals(false, $field->dump('n'));
+        $this->assertEquals(false, $field->dump('N'));
+        $this->assertEquals(false, $field->dump('nO'));
+        $this->assertEquals(false, $field->dump('fAlSe'));
+        $this->assertEquals(false, $field->dump('OfF'));
+        $this->assertEquals(false, $field->dump('0'));
     }
 }

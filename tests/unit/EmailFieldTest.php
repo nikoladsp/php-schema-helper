@@ -13,6 +13,16 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType("EMAIL"), $field->type());
     }
 
+    public function test_default()
+    {
+        $field = new EmailField('email');
+        $this->assertNull($field->default());
+
+        $value = 'test.me@gmail.com';
+        $field = new EmailField('email', false, true, $value);
+        $this->assertEquals($value, $field->default());
+    }
+
     public function test_construct_no_name()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -24,7 +34,7 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $field = new EmailField('email', false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new EmailField('email', false, false);
+        $field = new EmailField('email', false, false, 'test.me@gmail.com');
         $this->assertFalse($field->validate(null));
     }
 
@@ -38,7 +48,7 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_valid_email()
     {
-        $field = new EmailField('email', false,false);
+        $field = new EmailField('email', false,false, 'test.me@gmail.com');
         $this->assertTrue($field->validate('email@example.com'));
         $this->assertTrue($field->validate('firstname.lastname@example.com'));
         $this->assertTrue($field->validate('email@subdomain.example.com'));
@@ -60,7 +70,7 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_invalid_email()
     {
-        $field = new EmailField('email', false,false);
+        $field = new EmailField('email', false,false, 'test.me@gmail.com');
         $this->assertFalse($field->validate('mysite.ourearth.com'));
         $this->assertFalse($field->validate('mysite@.com.my'));
         $this->assertFalse($field->validate('@you.me.net'));
@@ -71,67 +81,67 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate('mysite..1234@yahoo.com'));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new EmailField('email', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new EmailField('email', true,true);
 
-        $this->assertEquals('', $field->cast('    '));
+        $this->assertEquals('', $field->dump('    '));
     }
 
-    public function test_cast_invalid_bool_true()
-    {
-        $field = new EmailField('email', true,true);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
-    }
-
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_true()
     {
         $field = new EmailField('email', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(true);
     }
 
-    public function test_cast_int()
+    public function test_dump_invalid_bool_false()
     {
         $field = new EmailField('email', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(+1);
+        $field->dump(false);
     }
 
-    public function test_cast_float()
+    public function test_dump_int()
     {
         $field = new EmailField('email', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(2.056);
+        $field->dump(+1);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_float()
     {
         $field = new EmailField('email', true,true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(2.056);
     }
 
-    public function test_cast_valid()
+    public function test_dump_invalid_object()
     {
         $field = new EmailField('email', true,true);
 
-        $this->assertEquals('myinvalidemail', $field->cast(' myinvalidemail '));
-        $this->assertEquals('-7', $field->cast(' -7 '));
-        $this->assertEquals('name.surname@gmail.com', $field->cast(' name.surname@gmail.com '));
+        $this->expectException(\InvalidArgumentException::class);
+        $field->dump(new stdClass());
+    }
+
+    public function test_dump_valid()
+    {
+        $field = new EmailField('email', true,true);
+
+        $this->assertEquals('myinvalidemail', $field->dump(' myinvalidemail '));
+        $this->assertEquals('-7', $field->dump(' -7 '));
+        $this->assertEquals('name.surname@gmail.com', $field->dump(' name.surname@gmail.com '));
     }
 }

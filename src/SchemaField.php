@@ -55,7 +55,7 @@ final class SchemaField extends Field
         return $valid;
     }
 
-    public function cast($value): Model
+    public function dump($value): Model
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

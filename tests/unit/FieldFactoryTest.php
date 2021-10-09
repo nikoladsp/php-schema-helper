@@ -11,6 +11,7 @@ use \SchemaHelper\IntField;
 use \SchemaHelper\DoubleField;
 use \SchemaHelper\DateTimeField;
 
+
 class FieldFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function test_create_no_params()
@@ -23,6 +24,18 @@ class FieldFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $field = FieldFactory::create(array(), 'username');
         $this->assertTrue($field instanceof StringField);
+    }
+
+    public function test_private_constructor()
+    {
+        $rc = new \ReflectionClass(FieldFactory::class);
+        $constructor = $rc->getConstructor();
+        $constructor->setAccessible(true);
+
+        $object = $rc->newInstanceWithoutConstructor();
+        $constructor->invoke($object, 1);
+
+        $this->assertTrue($object instanceof FieldFactory);
     }
 
     public function test_required()

@@ -20,7 +20,7 @@ class FieldTest extends \PHPUnit\Framework\TestCase
                 return false;
             }
 
-            public function cast($value): bool
+            public function dump($value): bool
             {
                 return false;
             }

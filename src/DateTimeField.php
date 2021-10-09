@@ -49,7 +49,7 @@ final class DateTimeField extends RangedField
             return true;
     }
 
-    public function cast($value): DateTime
+    public function dump($value): DateTime
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

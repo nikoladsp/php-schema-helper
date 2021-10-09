@@ -27,7 +27,7 @@ final class BoolField extends Field
             return false;
     }
 
-    public function cast($value): bool
+    public function dump($value): bool
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

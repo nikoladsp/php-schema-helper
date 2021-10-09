@@ -20,6 +20,16 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(new FieldType('DATETIME'), $field->type());
     }
 
+    public function test_default()
+    {
+        $field = new DateTimeField('timestamp');
+        $this->assertNull($field->default());
+
+        $timestamp = new DateTime();
+        $field = new DateTimeField('timestamp', 'c',false,false, null, null, $timestamp);
+        $this->assertEquals($timestamp, $field->default());
+    }
+
     public function test_format()
     {
         $field = new DateTimeField('timestamp');
@@ -35,7 +45,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $field = new DateTimeField('timestamp', 'c',false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new DateTimeField('timestamp', 'c', false, false);
+        $field = new DateTimeField('timestamp', 'c', false, false, null, null, new DateTime());
         $this->assertFalse($field->validate(null));
     }
 
@@ -77,7 +87,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_required_not_nullable()
     {
-        $field = new DateTimeField('timestamp', 'c', true, false);
+        $field = new DateTimeField('timestamp', 'c', true, false, null, null, new DateTime());
 
         $this->assertEquals('timestamp', $field->name());
         $this->assertEquals(true, $field->required());
@@ -88,7 +98,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_not_required_not_nullable()
     {
-        $field = new DateTimeField('timestamp', 'c', false, false);
+        $field = new DateTimeField('timestamp', 'c', false, false, null, null, new DateTime());
 
         $this->assertEquals('timestamp', $field->name());
         $this->assertEquals(false, $field->required());
@@ -156,60 +166,60 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate('2021-01-01T15:03:01.012346Z'));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
-        $timestamp = $field->cast('    ');
+        $timestamp = $field->dump('    ');
         $this->assertInstanceOf(DateTime::class, $timestamp);
     }
 
-    public function test_cast_invalid_string()
+    public function test_dump_invalid_string()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast('invalid timestamp');
+        $field->dump('invalid timestamp');
     }
 
-    public function test_cast_invalid_bool_true()
+    public function test_dump_invalid_bool_true()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
+        $field->dump(true);
     }
 
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_false()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(false);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_invalid_object()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(new stdClass());
     }
 
-    public function test_cast_valid()
+    public function test_dump_valid()
     {
         $field = new DateTimeField('timestamp', 'c', true, true);
 
         // Wednesday, August 25, 2021 6:35:12 AM
-        $timestamp = $field->cast(1629873312);
+        $timestamp = $field->dump(1629873312);
         $this->assertInstanceOf(DateTime::class, $timestamp);
         $this->assertEquals(2021, $timestamp->format('Y'));
         $this->assertEquals(8, $timestamp->format('m'));
@@ -219,7 +229,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(12, $timestamp->format('s'));
 
         // Tuesday, June 4, 2019 2:46:27 AM
-        $timestamp = $field->cast('  1559616387  ');
+        $timestamp = $field->dump('  1559616387  ');
         $this->assertInstanceOf(DateTime::class, $timestamp);
         $this->assertEquals(2019, $timestamp->format('Y'));
         $this->assertEquals(6, $timestamp->format('m'));
@@ -229,7 +239,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(27, $timestamp->format('s'));
 
         // Wednesday, August 21, 2020 5:25:06 AM
-        $timestamp = $field->cast('2020-08-21 05:25:06');
+        $timestamp = $field->dump('2020-08-21 05:25:06');
         $this->assertInstanceOf(DateTime::class, $timestamp);
         $this->assertEquals(2020, $timestamp->format('Y'));
         $this->assertEquals(8, $timestamp->format('m'));
@@ -239,7 +249,7 @@ class DateTimeFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(6, $timestamp->format('s'));
 
         // Saturday, February 17, 2018 3:09:57 PM
-        $timestamp = $field->cast(new DateTime('2018-02-17 15:09:57'));
+        $timestamp = $field->dump(new DateTime('2018-02-17 15:09:57'));
         $this->assertInstanceOf(DateTime::class, $timestamp);
         $this->assertEquals(2018, $timestamp->format('Y'));
         $this->assertEquals(2, $timestamp->format('m'));

@@ -31,7 +31,7 @@ class RegExField extends Field
         return 1 == preg_match($this->pattern, $value);
     }
 
-    public function cast($value): string
+    public function dump($value): string
     {
         if (is_null($value))
             throw new \InvalidArgumentException('Invalid value');

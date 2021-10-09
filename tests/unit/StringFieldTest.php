@@ -15,40 +15,50 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_type()
     {
-        $field = new StringField('id');
-        $this->assertEquals(new FieldType("STRING"), $field->type());
+        $field = new StringField('username');
+        $this->assertEquals(new FieldType('STRING'), $field->type());
+    }
+
+    public function test_default()
+    {
+        $field = new StringField('username', false, true);
+        $this->assertNull($field->default());
+
+        $value = 'testuser';
+        $field = new StringField('username', false, true, 1, 3, $value);
+        $this->assertEquals($value, $field->default());
     }
 
     public function test_min_greater_than_max()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new StringField('id', false, false,5, 4);
+        new StringField('username', false, false,5, 4);
     }
 
     public function test_min_negative()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new StringField('id', false, false,-1);
+        new StringField('username', false, false,-1);
     }
 
     public function test_max_negative()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new StringField('id', false, false, null,-1);
+        new StringField('username', false, false, null,-1);
     }
 
     public function test_min_max_negative()
     {
         $this->expectException(\InvalidArgumentException::class);
-        new StringField('id', false, false, -2, -1);
+        new StringField('username', false, false, -2, -1);
     }
 
     public function test_nullable()
     {
-        $field = new StringField('id', false, true);
+        $field = new StringField('username', false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new StringField('id', false,false);
+        $field = new StringField('username', false,false, null, null, 'testme');
         $this->assertFalse($field->validate(null));
     }
 
@@ -72,7 +82,7 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_required_not_nullable()
     {
-        $field = new StringField('name', true, false);
+        $field = new StringField('name', true, false, null, null, 'test');
 
         $this->assertEquals('name', $field->name());
         $this->assertEquals(true, $field->required());
@@ -81,7 +91,7 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_not_required_not_nullable()
     {
-        $field = new StringField('name', false, false);
+        $field = new StringField('name', false, false, null, null, 'teststr');
 
         $this->assertEquals('name', $field->name());
         $this->assertEquals(false, $field->required());
@@ -107,7 +117,7 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_string_min_length()
     {
-        $field = new StringField('name', false, false, 2);
+        $field = new StringField('name', false, false, 2, null, 'test');
 
         $this->assertFalse($field->validate(''));
         $this->assertFalse($field->validate('a'));
@@ -117,7 +127,7 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_string_max_length()
     {
-        $field = new StringField('name', false, false, null, 2);
+        $field = new StringField('name', false, false, null, 2, 'test');
 
         $this->assertTrue($field->validate(''));
         $this->assertTrue($field->validate('a'));
@@ -127,7 +137,7 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_string_min_max_length()
     {
-        $field = new StringField('name', false, false,1, 2);
+        $field = new StringField('name', false, false,1, 2, 'test');
 
         $this->assertFalse($field->validate(''));
         $this->assertTrue($field->validate('a'));
@@ -135,67 +145,67 @@ class StringFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($field->validate('abc'));
     }
 
-    public function test_cast_null()
+    public function test_dump_null()
     {
         $field = new StringField('name', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(null);
+        $field->dump(null);
     }
 
-    public function test_cast_empty()
+    public function test_dump_empty()
     {
         $field = new StringField('name', true, true);
 
-        $this->assertEquals('', $field->cast('    '));
+        $this->assertEquals('', $field->dump('    '));
     }
 
-    public function test_cast_invalid_bool_true()
-    {
-        $field = new StringField('name', true, true);
-
-        $this->expectException(\InvalidArgumentException::class);
-        $field->cast(true);
-    }
-
-    public function test_cast_invalid_bool_false()
+    public function test_dump_invalid_bool_true()
     {
         $field = new StringField('name', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(false);
+        $field->dump(true);
     }
 
-    public function test_cast_int()
+    public function test_dump_invalid_bool_false()
     {
         $field = new StringField('name', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(+1);
+        $field->dump(false);
     }
 
-    public function test_cast_float()
+    public function test_dump_int()
     {
         $field = new StringField('name', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(2.056);
+        $field->dump(+1);
     }
 
-    public function test_cast_invalid_object()
+    public function test_dump_float()
     {
         $field = new StringField('name', true, true);
 
         $this->expectException(\InvalidArgumentException::class);
-        $field->cast(new stdClass());
+        $field->dump(2.056);
     }
 
-    public function test_cast_valid()
+    public function test_dump_invalid_object()
     {
         $field = new StringField('name', true, true);
 
-        $this->assertEquals('mystring', $field->cast(' mystring '));
-        $this->assertEquals('-7', $field->cast(' -7 '));
-        $this->assertEquals('+3.14159', $field->cast(' +3.14159 '));
+        $this->expectException(\InvalidArgumentException::class);
+        $field->dump(new stdClass());
+    }
+
+    public function test_dump_valid()
+    {
+        $field = new StringField('name', true, true);
+
+        $this->assertEquals('mystring', $field->dump(' mystring '));
+        $this->assertEquals('-7', $field->dump(' -7 '));
+        $this->assertEquals('+3.14159', $field->dump(' +3.14159 '));
     }
 }
