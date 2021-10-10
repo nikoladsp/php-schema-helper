@@ -7,12 +7,6 @@ use \SchemaHelper\DoubleField;
 
 class DoubleFieldTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new DoubleField('');
-    }
-
     public function test_type()
     {
         $field = new DoubleField('cost');

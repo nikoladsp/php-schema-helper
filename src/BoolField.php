@@ -9,7 +9,7 @@ final class BoolField extends Field
 
     public function __construct(string $name, bool $required=false, bool $nullable=true, ?bool $default=null)
     {
-        parent::__construct($name, FieldType::BOOL, $required, $nullable, $default);
+        parent::__construct(FieldType::BOOL, $name, $required, $nullable, $default);
     }
 
     public function validate($value): bool

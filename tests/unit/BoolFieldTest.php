@@ -7,12 +7,6 @@ use \SchemaHelper\BoolField;
 
 class BoolFieldTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new BoolField('');
-    }
-
     public function test_type()
     {
         $field = new BoolField('authenticated');

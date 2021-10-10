@@ -11,7 +11,7 @@ class RegExField extends Field
         if (!$pattern)
             throw new \InvalidArgumentException('pattern is required argument');
 
-        parent::__construct($name, FieldType::REGEX, $required, $nullable, $default);
+        parent::__construct(FieldType::REGEX, $name, $required, $nullable, $default);
 
         $this->pattern = $pattern;
     }

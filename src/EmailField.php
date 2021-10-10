@@ -6,7 +6,7 @@ final class EmailField extends Field
 {
     public function __construct(string $name, bool $required = false, bool $nullable = true, ?string $default=null)
     {
-        parent::__construct($name, FieldType::EMAIL, $required, $nullable, $default);
+        parent::__construct(FieldType::EMAIL, $name, $required, $nullable, $default);
     }
 
     public function validate($value): bool

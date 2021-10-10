@@ -10,15 +10,14 @@ abstract class Field implements Serializable
     private bool $nullable;
     private $default;
 
-    protected function __construct(string $name, $type, bool $required=false, bool $nullable=true, $default=null)
+    protected function __construct($type, string $name='', bool $required=false, bool $nullable=true, $default=null)
     {
-        if (!$name)
-            throw new \InvalidArgumentException('name is required argument');
-//        else if ($nullable === false && is_null($default))
-//            throw new \InvalidArgumentException('nullable is false: default can not be set to null');
+        $name = trim($name);
+        if (empty($name))
+            $name = uniqid('', true);
 
-        $this->name = $name;
         $this->type = ($type instanceof FieldType) ? $type : new FieldType($type);
+        $this->name = $name;
         $this->required = $required;
         $this->nullable = $nullable;
         $this->default = $default;

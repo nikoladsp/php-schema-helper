@@ -4,9 +4,9 @@ namespace SchemaHelper;
 
 final class IntField extends RangedField
 {
-    public function __construct(string $name, bool $required=false, bool $nullable=true, ?int $min = null, ?int $max = null, ?int $default=null)
+    public function __construct(string $name='', bool $required=false, bool $nullable=true, ?int $min = null, ?int $max = null, ?int $default=null)
     {
-        parent::__construct($name, FieldType::INTEGER, $required, $nullable, $min, $max, $default);
+        parent::__construct(FieldType::INTEGER, $name, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool

@@ -7,12 +7,6 @@ use \SchemaHelper\IntField;
 
 class IntFieldTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new IntField('');
-    }
-
     public function test_type()
     {
         $field = new IntField('id');

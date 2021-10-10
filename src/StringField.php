@@ -16,7 +16,7 @@ final class StringField extends RangedField
             throw new \InvalidArgumentException('max must be non-negative numbers');
         }
 
-        parent::__construct($name, FieldType::STRING, $required, $nullable, $min, $max, $default);
+        parent::__construct(FieldType::STRING, $name, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool

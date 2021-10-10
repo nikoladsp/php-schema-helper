@@ -37,12 +37,6 @@ class RegExFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('*', $field->pattern());
     }
 
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new RegExField('', '*');
-    }
-
     public function test_construct_no_pattern()
     {
         $this->expectException(\InvalidArgumentException::class);

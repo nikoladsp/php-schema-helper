@@ -6,7 +6,7 @@ final class DoubleField extends RangedField
 {
     public function __construct(string $name, bool $required=false, bool $nullable=true, ?float $min = null, ?float $max = null, ?float $default=null)
     {
-        parent::__construct($name, FieldType::DOUBLE, $required, $nullable, $min, $max, $default);
+        parent::__construct(FieldType::DOUBLE, $name, $required, $nullable, $min, $max, $default);
     }
 
     public function validate($value): bool

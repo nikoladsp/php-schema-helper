@@ -7,12 +7,12 @@ use \SchemaHelper\Field;
 
 class FieldTest extends \PHPUnit\Framework\TestCase
 {
-    private function create_field_instance(string $name, $type, bool $required, bool $nullable): Field
+    private function create_field_instance($type, string $name='', bool $required=false, bool $nullable=true): Field
     {
-        return new class($name, $type, $required, $nullable) extends Field {
-            public function __construct(string $name, $type, bool $required, bool $nullable)
+        return new class($type, $name, $required, $nullable) extends Field {
+            public function __construct($type, string $name='', bool $required=false, bool $nullable=true)
             {
-                parent::__construct($name, $type, $required, $nullable);
+                parent::__construct($type, $name, $required, $nullable);
             }
 
             public function validate($value): bool
@@ -29,13 +29,13 @@ class FieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_no_name()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->create_field_instance('', FieldType::INTEGER, false, true);
+        $field = $this->create_field_instance(FieldType::INTEGER);
+        $this->assertFalse(empty($field->name()));
     }
 
     public function test_construct_integer()
     {
-        $field = $this->create_field_instance('id', FieldType::INTEGER, true, true);
+        $field = $this->create_field_instance(FieldType::INTEGER, 'id', true);
         $this->assertEquals('id', $field->name());
         $this->assertEquals(new FieldType(FieldType::INTEGER), $field->type());
         $this->assertEquals(true, $field->required());
@@ -44,7 +44,7 @@ class FieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_string()
     {
-        $field = $this->create_field_instance('nick', FieldType::STRING, false, true);
+        $field = $this->create_field_instance(FieldType::STRING, 'nick');
         $this->assertEquals('nick', $field->name());
         $this->assertEquals(new FieldType(FieldType::STRING), $field->type());
         $this->assertEquals(false, $field->required());
@@ -53,7 +53,7 @@ class FieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_email()
     {
-        $field = $this->create_field_instance('email', 'EMAIL', true, false);
+        $field = $this->create_field_instance('EMAIL', 'email', true, false);
         $this->assertEquals('email', $field->name());
         $this->assertEquals(new FieldType(FieldType::EMAIL), $field->type());
         $this->assertEquals(true, $field->required());
@@ -62,7 +62,7 @@ class FieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_construct_double()
     {
-        $field = $this->create_field_instance('amount', 10, false, false);
+        $field = $this->create_field_instance('DOUBLE', 'amount', false, false);
         $this->assertEquals('amount', $field->name());
         $this->assertEquals(new FieldType(FieldType::DOUBLE), $field->type());
         $this->assertEquals(false, $field->required());

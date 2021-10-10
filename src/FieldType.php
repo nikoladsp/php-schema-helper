@@ -16,6 +16,7 @@ final class FieldType
     const BOOL = 25;
     const DATETIME = 30;
     const SCHEMA = 35;
+    const LIST = 40;
 
     public function __construct($value)
     {

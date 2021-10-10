@@ -23,12 +23,6 @@ class EmailFieldTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($value, $field->default());
     }
 
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new EmailField('');
-    }
-
     public function test_nullable()
     {
         $field = new EmailField('email', false, true);

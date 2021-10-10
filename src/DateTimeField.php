@@ -11,7 +11,7 @@ final class DateTimeField extends RangedField
         if ($min instanceof DateTime && $max instanceof DateTime && $min > $max)
             throw new \InvalidArgumentException('min greater than max');
 
-        parent::__construct($name, FieldType::DATETIME, $required, $nullable, $min, $max, $default);
+        parent::__construct(FieldType::DATETIME, $name, $required, $nullable, $min, $max, $default);
         $this->format = $format;
     }
 

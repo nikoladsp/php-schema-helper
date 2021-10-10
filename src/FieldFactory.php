@@ -42,7 +42,7 @@ final class FieldFactory
             {
                 $schemaName = $params['type'] ?? null;
                 if (!is_null($schemaName) && class_exists($schemaName)) {
-                    return new SchemaField($name, new $schemaName, $required, $nullable, $default);
+                    return new SchemaField(new $schemaName, $name, $required, $nullable, $default);
                 }
 
                 throw new \InvalidArgumentException('Invalid type');

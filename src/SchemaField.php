@@ -6,9 +6,9 @@ final class SchemaField extends Field
 {
     private Schema $schema;
 
-    public function __construct(string $name, Schema $schema, bool $required = false, bool $nullable = true, ?Schema $default = null)
+    public function __construct(Schema $schema, string $name, bool $required = false, bool $nullable = true, ?Schema $default = null)
     {
-        parent::__construct($name, FieldType::SCHEMA, $required, $nullable, $default);
+        parent::__construct(FieldType::SCHEMA, $name, $required, $nullable, $default);
 
         $this->schema = $schema;
     }

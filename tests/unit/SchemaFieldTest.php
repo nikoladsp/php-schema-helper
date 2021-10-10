@@ -28,44 +28,38 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 {
     public function test_type()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
         $this->assertEquals(new FieldType('SCHEMA'), $field->type());
     }
 
     public function test_default()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
         $this->assertNull($field->default());
 
         $value = new TestSchema();
-        $field = new SchemaField('token', new TestSchema(), false, true, $value);
+        $field = new SchemaField(new TestSchema(), 'token', false, true, $value);
         $this->assertEquals($value, $field->default());
     }
 
     public function test_pattern()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
         $this->assertInstanceOf(TestSchema::class, $field->schema());
-    }
-
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new SchemaField('', new TestSchema());
     }
 
     public function test_nullable()
     {
-        $field = new SchemaField('token', new TestSchema(), false, true);
+        $field = new SchemaField(new TestSchema(), 'token', false, true);
         $this->assertTrue($field->validate(null));
 
-        $field = new SchemaField('token', new TestSchema(), false, false, new TestSchema());
+        $field = new SchemaField(new TestSchema(), 'token', false, false, new TestSchema());
         $this->assertFalse($field->validate(null));
     }
 
     public function test_validate_unsupported()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->assertFalse($field->validate(new stdClass()));
         $this->assertFalse($field->validate(121));
@@ -74,7 +68,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_validate_not_registered()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
         $reg = Registry::instance();
         $reg->remove(TestSchema::class);
 
@@ -84,7 +78,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_valid_schema()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->assertTrue($field->validate(array("id" => 1, "username" => "testuser")));
         $this->assertTrue($field->validate(array("id" => 1, "username" => "testuser", "description" => "test desc...")));
@@ -105,7 +99,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_invalid_schema()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->assertFalse($field->validate(array("username" => "testuser")));
         $this->assertFalse($field->validate(array("username" => "testuser", "description" => "test desc...")));
@@ -128,7 +122,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_null()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(null);
@@ -136,7 +130,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_empty()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump('');
@@ -144,7 +138,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_invalid_bool_true()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(true);
@@ -152,7 +146,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_invalid_bool_false()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(false);
@@ -160,7 +154,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_int()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(+1);
@@ -168,7 +162,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_float()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(2.056);
@@ -176,7 +170,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_invalid_object()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $this->expectException(\InvalidArgumentException::class);
         $field->dump(new stdClass());
@@ -184,7 +178,7 @@ class SchemaFieldTest extends \PHPUnit\Framework\TestCase
 
     public function test_dump_valid()
     {
-        $field = new SchemaField('token', new TestSchema());
+        $field = new SchemaField(new TestSchema(),'token');
 
         $model = new TestModel();
         $model->id = 3;

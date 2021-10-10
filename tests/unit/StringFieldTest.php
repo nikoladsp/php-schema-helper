@@ -7,12 +7,6 @@ use \SchemaHelper\StringField;
 
 class StringFieldTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_construct_no_name()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        new StringField('');
-    }
-
     public function test_type()
     {
         $field = new StringField('username');
